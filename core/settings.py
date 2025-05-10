@@ -149,6 +149,8 @@ DATABASES['default'].update(db_from_env)
 # Configure CORS
 CORS_ALLOWED_ORIGINS = [
     "https://lingano-frontend-444dc37a5bca.herokuapp.com",
+    "http://beta.lingano.live",
+    "https://beta.lingano.live",
     "http://localhost:5173",  # Vite dev server
 ]
 
