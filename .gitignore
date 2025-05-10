@@ -1,0 +1,52 @@
+# === Global ===
+*.log
+*.pot
+*.pyc
+__pycache__/
+env/
+venv/
+*.sqlite3
+.DS_Store
+*.env
+.env.*
+.idea/
+.vscode/
+*.swp
+*.swo
+node_modules/
+*.pid
+
+# === Django ===
+/backend/db.sqlite3
+/backend/staticfiles/
+/backend/media/
+/backend/__pycache__/
+/backend/core/__pycache__/
+/backend/*.py[cod]
+/backend/core/*.py[cod]
+
+# === React ===
+/frontend/node_modules/
+/frontend/build/
+/frontend/.env.local
+/frontend/.env.development.local
+/frontend/.env.test.local
+/frontend/.env.production.local
+/frontend/npm-debug.log*
+/frontend/yarn-debug.log*
+/frontend/yarn-error.log*
+
+# === Coverage / Testing ===
+.coverage
+htmlcov/
+coverage.xml
+*.cover
+
+# === Heroku / Deployment ===
+/staticfiles/
+/*.sqlite3
+
+# === Python compiled files ===
+*.pyo
+*.pyd
+.Python
