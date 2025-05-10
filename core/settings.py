@@ -148,12 +148,14 @@ DATABASES['default'].update(db_from_env)
 
 # Configure CORS
 CORS_ALLOWED_ORIGINS = [
-    "https://linganodjango-8d1cd6dceb8a.herokuapp.com",
+    "https://lingano-frontend-444dc37a5bca.herokuapp.com",
     "http://localhost:5173",  # Vite dev server
 ]
 
 # Or more permissive for development
 # CORS_ALLOW_ALL_ORIGINS = True  # Use this for development only!
+
+CORS_ALLOW_CREDENTIALS = True
 
 # REST Framework settings
 REST_FRAMEWORK = {
