@@ -1,0 +1,59 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main  # Adjust this if your default branch is different
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # GitHub's built-in environment
+
+    steps:
+      # Checkout Backend Repo
+      - name: Checkout Backend Repository
+        uses: actions/checkout@v3
+        with:
+          repository: 'Lingano/V2-Backend'  # Update with your backend repo
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Checkout Frontend Repo
+      - name: Checkout Frontend Repository
+        uses: actions/checkout@v3
+        with:
+          repository: 'Lingano/V2-Frontend'  # Update with your frontend repo
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: frontend  # Use a separate directory for frontend to avoid overwriting
+
+      # Set up SSH key for deployment
+      - name: Set up SSH key for VPS
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
+
+      # Deploy Backend
+      - name: Deploy Backend to VPS
+        run: |
+          ssh -o StrictHostKeyChecking=no root@91.99.29.133 << 'EOF'
+            cd ~/LinganoDeployment/V2-Backend  # Change to your backend repo directory
+            git pull origin main
+            # Install dependencies and restart your backend service if necessary
+            pip install -r requirements.txt  # For Django or other Python dependencies
+            python manage.py migrate         # For Django migrations
+            sudo systemctl restart gunicorn  # If you're using Gunicorn (adjust as needed)
+            echo "Backend deployed!"
+          EOF
+
+      # Deploy Frontend
+      - name: Deploy Frontend to VPS
+        run: |
+          ssh -o StrictHostKeyChecking=no root@91.99.29.133 << 'EOF'
+            cd ~/LinganoDeployment/V2-Frontend  # Change to your frontend repo directory
+            git pull origin main
+            # Build your frontend (for React)
+            npm install
+            npm run build  # Or any build command you use
+            # Restart your frontend service if needed (e.g., nginx, pm2, etc.)
+            sudo systemctl restart nginx   # If you're using nginx for serving frontend
+            echo "Frontend deployed!"
+          EOF
