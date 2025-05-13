@@ -152,6 +152,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://beta.lingano.live",
     "https://beta.lingano.live",
     "http://localhost:5173",  # Vite dev server
+    "https://api.lingano.live",
 ]
 
 # Or more permissive for development
@@ -169,3 +170,18 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
     ],
 }
+
+# After the existing CORS configuration, add:
+if DEBUG:
+    # Add development-specific CORS settings
+    CORS_ALLOW_ALL_ORIGINS = True
+    # Optional: Less restrictive authentication for development
+    REST_FRAMEWORK = {
+        'DEFAULT_PERMISSION_CLASSES': [
+            'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+        ],
+        'DEFAULT_AUTHENTICATION_CLASSES': [
+            'rest_framework.authentication.SessionAuthentication',
+            'rest_framework.authentication.BasicAuthentication',
+        ],
+    }
