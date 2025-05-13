@@ -153,6 +153,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://beta.lingano.live",
     "http://localhost:5173",  # Vite dev server
     "https://api.lingano.live",
+    "api.lingano.live",
 ]
 
 # Or more permissive for development
