@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'corsheaders',     # Add CORS Headers
     
     # Your apps
-    'api',  # Your API app (create this)
+    'api',
+    "market.apps.MarketConfig"  # Your API app (create this)
 ]
 
 MIDDLEWARE = [
@@ -153,7 +154,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://beta.lingano.live",
     "http://localhost:5173",  # Vite dev server
     "https://api.lingano.live",
-    "api.lingano.live",
+    "https://neue.lingano.live",
 ]
 
 # Or more permissive for development
