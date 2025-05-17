@@ -120,6 +120,7 @@ urlpatterns = [
     
     # Include your API URLs
     path('api/', include('api.urls')),
+    path('market/', include('market.urls')),
     
     # Simple health check endpoint
     path('health/', health_check),
