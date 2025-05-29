@@ -1,0 +1,52 @@
+<!DOCTYPE html> {% load socialaccount %}
+<!-- new -->
+<html>
+    <head>
+        <title>User Profile</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 40px;
+            }
+            .container {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+            .profile-box {
+                border: 1px solid #ddd;
+                padding: 20px;
+                border-radius: 5px;
+            }
+            h1 {
+                color: #333;
+            }
+            .label {
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>User Profile</h1>
+            <div class="profile-box">
+                <p>
+                    <span class="label">First Name:</span> {{ user.first_name }}
+                </p>
+                <p>
+                    <span class="label">Last Name:</span> {{ user.last_name }}
+                </p>
+                <p>
+                    <span class="label">Username:</span> {{ user.get_username }}
+                </p
+                <p>
+                    <span class="label">Social Accounts:</span>
+                    {% for account in user.socialaccount_set.all %}
+                        {{ account.provider }} ({{ account.uid }})<br>
+                    {% empty %}
+                        No social accounts linked.
+                    {% endfor %}
+                <p><span class="label">Email:</span> {{ user.email }}</p>
+            </div>
+        </div>
+    </body>
+</html>

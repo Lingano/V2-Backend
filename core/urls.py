@@ -14,6 +14,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import path, include, re_path
 from django.views.generic import TemplateView
@@ -21,16 +22,21 @@ from django.http import HttpResponse
 from django.conf import settings
 import os
 import json
+from .views import profile_view
+
 
 # Simple test view that returns plain text
 def hello_world(request):
     return HttpResponse("Hello, World! Django is working.")
 
+
 # Test view to show environment and settings information
 def debug_info(request):
-    template_dirs = settings.TEMPLATES[0]['DIRS']
-    static_info = f"STATIC_URL: {settings.STATIC_URL}\nSTATIC_ROOT: {settings.STATIC_ROOT}"
-    
+    template_dirs = settings.TEMPLATES[0]["DIRS"]
+    static_info = (
+        f"STATIC_URL: {settings.STATIC_URL}\nSTATIC_ROOT: {settings.STATIC_ROOT}"
+    )
+
     # Safely check if files exist
     template_files = []
     if template_dirs and os.path.exists(template_dirs[0]):
@@ -38,12 +44,17 @@ def debug_info(request):
             template_files = os.listdir(template_dirs[0])
         except:
             template_files = ["Error listing template files"]
-    
+
     # Get environment variables (excluding sensitive info)
-    env_vars = {k: v for k, v in os.environ.items() 
-                if not any(sensitive in k.lower() for sensitive in 
-                           ['secret', 'password', 'token', 'key'])}
-    
+    env_vars = {
+        k: v
+        for k, v in os.environ.items()
+        if not any(
+            sensitive in k.lower()
+            for sensitive in ["secret", "password", "token", "key"]
+        )
+    }
+
     debug_html = f"""
     <html>
     <head><title>Debug Info</title></head>
@@ -71,6 +82,7 @@ def debug_info(request):
     </html>
     """
     return HttpResponse(debug_html)
+
 
 # Create a simple HTML test page
 def test_html(request):
@@ -106,25 +118,26 @@ def test_html(request):
     """
     return HttpResponse(html)
 
+
 # Health check endpoint
 def health_check(request):
-    return HttpResponse('OK')
+    return HttpResponse("OK")
+
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    
+    path("admin/", admin.site.urls),
     # Test routes
-    path('hello/', hello_world, name='hello_world'),
-    path('debug/', debug_info, name='debug_info'),
-    path('test/', test_html, name='test_html'),
-    
+    path("hello/", hello_world, name="hello_world"),
+    path("debug/", debug_info, name="debug_info"),
+    path("test/", test_html, name="test_html"),
+    # Authentication and authorization
+    path("accounts/", include("allauth.urls")),
+    path("accounts/profile/", profile_view, name="profile"),
     # Include your API URLs
-    path('api/', include('api.urls')),
-    path('market/', include('market.urls')),
-    
+    path("api/", include("api.urls")),
+    path("market/", include("market.urls")),
     # Simple health check endpoint
-    path('health/', health_check),
-    
+    path("health/", health_check),
     # Serve the React app for all other routes
     # re_path(r'^.*$', TemplateView.as_view(template_name='index.html')),
 ]

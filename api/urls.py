@@ -6,6 +6,14 @@ from .views import (
     CompanyDetailAPI,
     CompanyStatsAPI,
     CompanySearchAPI,
+    CompanyScraperAPI,
+    CompanyDataSourcesAPI,
+)
+from .database_views import (
+    DatabaseBrowserView,
+    DatabaseTablesAPI,
+    DatabaseTableDataAPI,
+    DatabaseQueryAPI,
 )
 
 urlpatterns = [
@@ -15,4 +23,10 @@ urlpatterns = [
     path("companies/<int:pk>/", CompanyDetailAPI.as_view(), name="company_detail"),
     path("companies/stats/", CompanyStatsAPI.as_view(), name="company_stats"),
     path("companies/search/", CompanySearchAPI.as_view(), name="company_search"),
+    path("companies/scrape/", CompanyScraperAPI.as_view(), name="company_scraper"),
+    path(
+        "companies/data-sources/",
+        CompanyDataSourcesAPI.as_view(),
+        name="company_data_sources",
+    ),
 ]

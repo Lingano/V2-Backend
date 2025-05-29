@@ -156,111 +156,107 @@ class CompanyScraperAPI(APIView):
     """
     API endpoint to trigger data scraping from external sources
     """
-
     permission_classes = []  # Allow anyone to access for demo
-
+    
     def post(self, request):
         """Trigger data scraping"""
-        source = request.data.get("source", "all")
-        query = request.data.get("query", None)
-        limit = request.data.get("limit", 10)
-
+        source = request.data.get('source', 'all')
+        query = request.data.get('query', None)
+        limit = request.data.get('limit', 10)
+        
         # Validate source
-        valid_sources = ["mock", "crunchbase", "opencorporates", "all"]
+        valid_sources = ['mock', 'crunchbase', 'opencorporates', 'all']
         if source not in valid_sources:
-            return Response(
-                {"error": f"Invalid source. Must be one of: {valid_sources}"},
-                status=400,
-            )
-
+            return Response({
+                "error": f"Invalid source. Must be one of: {valid_sources}"
+            }, status=400)
+        
         try:
             scraper_manager = ScraperManager()
-
-            if source == "all":
+            
+            if source == 'all':
                 companies = scraper_manager.fetch_from_all_sources(query, limit)
                 message = "Fetched from all sources"
             else:
                 companies = scraper_manager.fetch_from_source(source, query, limit)
                 message = f"Fetched from {source}"
-
+            
             # Serialize the companies for response
             from .serializers import CompanyListSerializer
-
             serializer = CompanyListSerializer(companies, many=True)
-
-            return Response(
-                {
-                    "message": message,
-                    "companies_fetched": len(companies),
-                    "query": query,
-                    "source": source,
-                    "companies": serializer.data,
-                }
-            )
-
-        except Exception as e:
-            return Response({"error": f"Error during scraping: {str(e)}"}, status=500)
-
+            
+            return Response({
+                "message": message,
+                "companies_fetched": len(companies),
+                "query": query,
+                "source": source,
+                "companies": serializer.data
+            })
+              except Exception as e:
+            return Response({
+                "error": f"Error during scraping: {str(e)}"
+            }, status=500)
+    
     def get(self, request):
         """Get information about available scrapers"""
-        return Response(
-            {
-                "available_sources": [
-                    {"name": "mock", "description": "Mock API data for testing"},
-                    {
-                        "name": "crunchbase",
-                        "description": "Crunchbase company data (requires API key)",
-                    },
-                    {
-                        "name": "opencorporates",
-                        "description": "OpenCorporates public company data",
-                    },
-                    {"name": "all", "description": "Fetch from all available sources"},
-                ],
-                "usage": {
-                    "POST": {
-                        "source": "string (optional, default: 'all')",
-                        "query": "string (optional, search query)",
-                        "limit": "integer (optional, default: 10)",
-                    }
+        return Response({
+            "available_sources": [
+                {
+                    "name": "mock",
+                    "description": "Mock API data for testing"
                 },
+                {
+                    "name": "crunchbase", 
+                    "description": "Crunchbase company data (requires API key)"
+                },
+                {
+                    "name": "opencorporates",
+                    "description": "OpenCorporates public company data"
+                },
+                {
+                    "name": "all",
+                    "description": "Fetch from all available sources"
+                }
+            ],
+            "usage": {
+                "POST": {
+                    "source": "string (optional, default: 'all')",
+                    "query": "string (optional, search query)",
+                    "limit": "integer (optional, default: 10)"
+                }
             }
-        )
+        })
 
 
 class CompanyDataSourcesAPI(APIView):
     """
     API to get statistics about data sources and last fetch times
     """
-
     permission_classes = []
-
+    
     def get(self, request):
         """Get data source statistics"""
         from django.db.models import Count
-
         # Get companies created in the last 24 hours (assuming they're from scrapers)
         recent_companies = Company.objects.filter(
             id__gte=1  # This is a simple way, you might want to add a 'created_at' field
         )
-
-        return Response(
-            {
-                "total_companies": Company.objects.count(),
-                "recent_companies": recent_companies.count(),
-                "companies_by_country": list(
-                    Company.objects.values("country_of_origin")
-                    .annotate(count=Count("id"))
-                    .order_by("-count")[:10]
-                ),
-                "companies_by_sector": list(
-                    Company.objects.values("economic_sector")
-                    .annotate(count=Count("id"))
-                    .order_by("-count")[:10]
-                ),
-                "scraper_info": {
-                    "last_run": "Not tracked yet (add timestamp fields to track this)",
-                    "available_sources": ["mock", "crunchbase", "opencorporates"],
-                },
+        
+        return Response({
+            "total_companies": Company.objects.count(),
+            "recent_companies": recent_companies.count(),
+            "companies_by_country": list(
+                Company.objects.values('country_of_origin').annotate(
+                    count=Count('id')
+                ).order_by('-count')[:10]
+            ),
+            "companies_by_sector": list(
+                Company.objects.values('economic_sector').annotate(
+                    count=Count('id')
+                ).order_by('-count')[:10]
+            ),
+            "scraper_info": {
+                "last_run": "Not tracked yet (add timestamp fields to track this)",
+                "available_sources": ["mock", "crunchbase", "opencorporates"]
             }
-        )
+        })

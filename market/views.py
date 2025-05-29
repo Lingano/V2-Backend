@@ -5,34 +5,40 @@ from market.models import Company, Product, Stock, Trade, StockTransaction
 class CompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
-        fields = ['id', 'name', 'address', 'phone_number', 'email']  # Explicitly list the fields to include
+        fields = [
+            "id",
+            "name",
+            "address",
+            "phone_number",
+            "email",
+        ]  # Explicitly list the fields to include
 
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = '__all__'  # Include all fields for simplicity
+        fields = "__all__"  # Include all fields for simplicity
 
 
 class StockSerializer(serializers.ModelSerializer):
     class Meta:
         model = Stock
-        fields = '__all__'
+        fields = "__all__"
 
 
 class TradeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Trade
-        fields = '__all__'
+        fields = "__all__"
 
 
 class StockTransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = StockTransaction
-        fields = '__all__'
+        fields = "__all__"
 
 
-class CompanyListView(generics.ListAPIView):
+class CompanyListCreateView(generics.ListCreateAPIView):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
 
@@ -55,5 +61,6 @@ class TradeListCreateView(generics.ListCreateAPIView):
 class StockTransactionListCreateView(generics.ListCreateAPIView):
     queryset = StockTransaction.objects.all()
     serializer_class = StockTransactionSerializer
+
 
 # Optionally, add detail views and simulation endpoints as needed
